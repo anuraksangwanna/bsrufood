@@ -11,9 +11,9 @@ class _ListfoodState extends State<Listfood> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: <Widget>[Text("zzsc"),Text("xdgfdh")
-      ,Text("dfdg")
-      ,Text("zzsc")],
+      children: <Widget>[Text(""),Text("")
+      ,Text("")
+      ,Text("")],
     );
   }
 }

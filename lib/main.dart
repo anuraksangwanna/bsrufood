@@ -3,6 +3,7 @@ import 'package:bsrufood/srceen/listfood.dart';
 import 'package:bsrufood/srceen/login.dart';
 import 'package:bsrufood/srceen/multify.dart';
 import 'package:bsrufood/srceen/porfile.dart';
+import 'package:bsrufood/srceen/regisfb.dart';
 import 'package:bsrufood/srceen/splashscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,8 @@ class Myapp extends StatelessWidget {
       routes: {
         '/' : (_) => Splashscreen(),
         '/home' : (_) => Mainhome(),
-        '/login' : (_) => Login()
+        '/login' : (_) => Login(),
+        '/register' : (_) => Registerfb()
       },
     );
   }

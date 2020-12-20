@@ -1,4 +1,5 @@
 import 'package:bsrufood/srceen/auth_controller.dart';
+import 'package:bsrufood/srceen/singin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -14,7 +15,7 @@ class Login extends StatefulWidget {
 final keyfrom = GlobalKey<FormState>();
 final userController = TextEditingController();
 final passwordController = TextEditingController();
-AuthController authController ;
+Authcontroller authController;
 final facebookLogin = FacebookLogin();
 
 
@@ -32,7 +33,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    authController = AuthController(context);
+    authController = Authcontroller(context);
   }
 
   @override
@@ -46,9 +47,13 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  "images/logo.png",
-                  width: 100,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image.asset(
+                    "images/logo.jpg",
+                    width: 200,
+                    
+                  ),
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 10)),
                 Form(
@@ -89,7 +94,8 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white)),
                               onPressed: () {
-                                _onLogin();
+                                MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context) => Register() );
+                                Navigator.push(context, route);
                               }),
                         ),
                         Align(

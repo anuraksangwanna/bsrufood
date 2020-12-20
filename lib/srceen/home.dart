@@ -12,12 +12,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      child: Text("asd"),
-      onPressed: () {
-        MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context) => HH());
-        Navigator.push(context, route);
-      },
-    );
+    return Container();
   }
 }
