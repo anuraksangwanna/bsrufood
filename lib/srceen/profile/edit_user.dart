@@ -9,13 +9,15 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+class EditUser extends StatefulWidget {
+  final Map user ;
+  EditUser(this.user);
 
-class Registerfb extends StatefulWidget {
   @override
-  _RegisterfbState createState() => _RegisterfbState();
+  _EditUserState createState() => _EditUserState();
 }
 
-class _RegisterfbState extends State<Registerfb> {
+class _EditUserState extends State<EditUser> {
   final keyfrom = GlobalKey<FormState>();
   final name = TextEditingController();
   final userController = TextEditingController();
@@ -37,11 +39,15 @@ class _RegisterfbState extends State<Registerfb> {
 
   File _image;
   File _imgReceipt;
-  String urlPhoto, urlPhoto1;
+  String urlPhoto , urlPhoto1;
 
   @override
   void initState() { 
     super.initState();
+    urlPhoto = widget.user["photo"];
+    name.text = widget.user["username"];
+    stucode.text = widget.user["stucode"];
+    phoneNumber.text = widget.user["phone"];
     statusBool = false;
     // print(memberid);
   }
@@ -49,35 +55,61 @@ class _RegisterfbState extends State<Registerfb> {
   void _onSave() {
       if (keyfrom.currentState.validate()) {
         keyfrom.currentState.save();
-        setupDisplayName();
+        registerThread();
+        print(passwordController.text);
       }
+  }
+  
+
+  Future<void> uploadPictureToStore() async {
+    Random random = Random();
+    int i = random.nextInt(100000);
+
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    if (_image != null) {
+      await firebaseStorage.ref().child('Member/member$i.jpg').putFile(_image);
+      urlPhoto = await firebaseStorage
+          .ref()
+          .child('Member/member$i.jpg')
+          .getDownloadURL();
+    } else {
+      urlPhoto = widget.user["photo"];
+    }
+    await setupDisplayName();
+  }
+
+  Future<void> registerThread() async {
+    setState(() {
+      statusBool = true;
+    });
+    uploadPictureToStore();
   }
 
   Future<void> setupDisplayName() async {
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     List<String> tokenUser;
-      int member;
-        final documents = await firestore.collection("member").get();
-        member = documents.docChanges.length+1;
-        print(member);
-        memberid = member.toString();
+      // int member;
+      //   final documents = await firestore.collection("member").get();
+      //   member = documents.docChanges.length+1;
+      //   print(member);
+      //   memberid = member.toString();
     await _firebaseMessaging.getToken().then((String token) {
       tokenUser = [token];
     });
     Map<String, dynamic> map = Map();
-    map['username'] = firebaseAuth.currentUser.displayName;
-    map['userId'] = "${now.year}$memberid";
+    map['username'] = name.text;
+    map['photo'] = urlPhoto;
     map['stucode'] = stucode.text;
     map['phone'] = phoneNumber.text;
-    map['photo'] = urlPhoto;
     map['tokenUser'] = FieldValue.arrayUnion(tokenUser);
     map['userStatus'] = "user";
 
     var user = firebaseAuth.currentUser;
     if (user != null) {
-      await firestore.collection("member").doc(user.uid).set(map).then((value) {
-        Navigator.of(context).pushReplacementNamed('/home');
+      await user.updateProfile(displayName: name.text, photoURL: urlPhoto);
+      await firestore.collection("member").doc(user.uid).update(map).then((value) {
+        Navigator.pop(context);
       });
     }
     print(user);
@@ -134,8 +166,31 @@ class _RegisterfbState extends State<Registerfb> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Text("ข้อมูลร้านค้า"),
+                      Text("รูปภาพนักศึกษา"),
                       Divider(),
+                      _image != null
+                          ? Image.file(
+                              _image,
+                              width: 150,
+                              height: 150,
+                            )
+                          : urlPhoto == null
+                              ? Text("กำลังโหลดรูป")
+                              : Image.network(urlPhoto, width: 64),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          cameraButton(),
+                          Padding(padding: EdgeInsets.only(right: 70)),
+                          galleryButton()
+                        ],
+                      ),
+                      Text("ข้อมูลนักศึกษา"),
+                      Divider(),
+                      _createinput(
+                          controller: name,
+                          hinttext: "ชื่อ",
+                          maxLength: 50),
                       _createinput(
                           controller: stucode,
                           hinttext: "รหัสนักศึกษา",),

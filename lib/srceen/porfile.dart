@@ -1,3 +1,5 @@
+import 'package:bsrufood/srceen/login.dart';
+import 'package:bsrufood/srceen/profile/edit_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +19,7 @@ FirebaseAuth firebase = FirebaseAuth.instance;
  FirebaseFirestore firestore = FirebaseFirestore.instance;
 final facebookLogin = FacebookLogin();
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
+Map user;
 Future<void> logout() async {
    List<String> tokenUser;
     await _firebaseMessaging.getToken().then((String token) {
@@ -28,8 +30,25 @@ Future<void> logout() async {
     await firestore.collection("member").doc(firebase.currentUser.uid).update(map);
     await facebookLogin.logOut();
     await firebase.signOut();
-    Navigator.pushReplacementNamed(context, "/login");
+    MaterialPageRoute route =
+        MaterialPageRoute(builder: (BuildContext context) => Login());
+    Navigator.pushAndRemoveUntil(
+        context, route, (Route<dynamic> route) => false);
   }
+
+  void getUser()async{
+      await firestore.collection("member").doc(firebase.currentUser.uid).get().then((value) {
+          setState(() {
+            user = value.data();
+          });
+      });
+    }
+
+    @override
+    void initState() { 
+      super.initState();
+      getUser();
+    }
 
   Widget build(BuildContext context) {
     return Column(
@@ -40,21 +59,23 @@ Future<void> logout() async {
           child: Image.network(firebase.currentUser.photoURL)),
           title: Text(firebase.currentUser.displayName),
           subtitle: Text("แก้ไขข้อมูลส่วนตัว",style: TextStyle(color:Colors.green),),
-          onTap: () {},
+          onTap: () {
+            MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context)=>EditUser(user));
+            Navigator.push(context, route).then((value){getUser();});
+          },
         ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.settings),
-          title: Text("การตั้งค่าแอปพลิเคชัน"),
-          onTap: () {},
-        ),
+        // Divider(),
+        // ListTile(
+        //   leading: Icon(Icons.settings),
+        //   title: Text("การตั้งค่าแอปพลิเคชัน"),
+        //   onTap: () {},
+        // ),
         Divider(),
         ListTile(
           leading: Icon(Icons.logout),
           title: Text("ออกจากระบบ"),
           onTap: ()=>logout(),
         ),
-        Divider(),
       ],
     );
   }

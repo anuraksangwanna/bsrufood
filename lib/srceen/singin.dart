@@ -131,6 +131,7 @@ class _RegisterState extends State<Register> {
     Map<String, dynamic> map = Map();
     map['username'] = name.text;
     map['userId'] = "${now.year}$memberid";
+    map['photo'] = urlPhoto;
     map['stucode'] = stucode.text;
     map['phone'] = phoneNumber.text;
     map['tokenUser'] = FieldValue.arrayUnion(tokenUser);
@@ -197,7 +198,7 @@ class _RegisterState extends State<Register> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Text("รูปภาพร้านค้า"),
+                      Text("รูปภาพนักศึกษา"),
                       Divider(),
                       _image != null
                           ? Image.file(
@@ -214,7 +215,7 @@ class _RegisterState extends State<Register> {
                           galleryButton()
                         ],
                       ),
-                      Text("ข้อมูลร้านค้า"),
+                      Text("ข้อมูลนักศึกษา"),
                       Divider(),
                       _createinput(
                           controller: name,

@@ -60,7 +60,7 @@ class Authcontroller {
             .collection("member")
             .doc(_firebaseAuth.currentUser.uid)
             .update(map);
-        Navigator.popAndPushNamed(_context, "/home");
+        Navigator.pushReplacementNamed(_context, "/home");
       } else {
         await facebookLogin.logOut();
         await _firebaseAuth.signOut();
@@ -105,7 +105,7 @@ class Authcontroller {
             .collection("member")
             .doc(_firebaseAuth.currentUser.uid)
             .update(map);
-        Navigator.popAndPushNamed(_context, "/home");
+        Navigator.pushReplacementNamed(_context, "/home");
       } else {
         await facebookLogin.logOut();
         await _firebaseAuth.signOut();
