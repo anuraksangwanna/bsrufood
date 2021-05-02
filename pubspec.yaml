@@ -42,6 +42,8 @@ dependencies:
   clipboard: ^0.1.2+8
   uuid: ^2.2.2
   pretty_qr_code: ^1.0.1
+  flutter_datetime_picker: ^1.5.1
+
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +65,9 @@ flutter:
    - images/asasass.jpg
    - images/fb.png
    - images/profi.jpg
-   - images/logo.png
+   - images/logo2.png
+   - images/profile.png
+   - images/logo.jpg
    - images/empty.jpg
   #  - images/a_dot_ham.jpeg
 

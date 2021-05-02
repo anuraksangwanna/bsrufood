@@ -21,6 +21,7 @@ class _RegisterState extends State<Register> {
   final userController = TextEditingController();
   final stucode = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordReplaceController = TextEditingController();
   final phoneNumber = TextEditingController();
   final reCeipt = TextEditingController();
   String bank ;
@@ -49,8 +50,26 @@ class _RegisterState extends State<Register> {
   void _onSave() {
       if (keyfrom.currentState.validate()) {
         keyfrom.currentState.save();
-        registerThread();
-        print(passwordController.text);
+        if(passwordController.text == passwordReplaceController.text){
+          registerThread();
+        }else{
+          Alert(
+          context: context,
+          type: AlertType.error,
+          title: "ข้อผิดพลาด",
+          desc: "รหัสผ่านไม่ตรงกัน",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "ตกลง",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ]).show();
+        }
       }
   }
 
@@ -141,7 +160,7 @@ class _RegisterState extends State<Register> {
     if (user != null) {
       await user.updateProfile(displayName: name.text, photoURL: urlPhoto);
       await firestore.collection("member").doc(user.uid).set(map).then((value) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushNamedAndRemoveUntil("/home", (Route<dynamic> route) => false);
       });
     }
     print(user);
@@ -201,12 +220,28 @@ class _RegisterState extends State<Register> {
                       Text("รูปภาพนักศึกษา"),
                       Divider(),
                       _image != null
-                          ? Image.file(
-                              _image,
-                              width: 150,
-                              height: 150,
-                            )
-                          : Image.asset("images/empty.jpg", width: 150),
+                          ? Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              image: DecorationImage(
+                                image: FileImage(_image),
+                                fit: BoxFit.cover
+                              )
+                            ),
+                            width:200,
+                            height:200,
+                          )
+                          : Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              image: DecorationImage(
+                                image: AssetImage("images/profile.png")
+                                ,fit: BoxFit.cover
+                              )
+                            ),
+                            width:200,
+                            height:200,
+                          ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -227,8 +262,15 @@ class _RegisterState extends State<Register> {
                           keyboardType: TextInputType.emailAddress
                           ,isPassword: true),
                       _createinput(
+                          controller: passwordReplaceController,
+                          hinttext: "ยืนยันรหัสผ่านอีกครั้ง",
+                          keyboardType: TextInputType.emailAddress
+                          ,isPassword: true),
+                      _createinput(
                           controller: stucode,
-                          hinttext: "รหัสนักศึกษา",),
+                          hinttext: "รหัสนักศึกษา",
+                          maxLength: 10
+                          ),
                       _createinput(
                           controller: phoneNumber,
                           hinttext: "เบอร์โทรศัพท์",

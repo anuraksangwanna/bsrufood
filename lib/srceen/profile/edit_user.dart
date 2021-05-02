@@ -169,14 +169,30 @@ class _EditUserState extends State<EditUser> {
                       Text("รูปภาพนักศึกษา"),
                       Divider(),
                       _image != null
-                          ? Image.file(
-                              _image,
-                              width: 150,
-                              height: 150,
-                            )
+                          ? Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              image: DecorationImage(
+                                image: FileImage(_image),
+                                fit: BoxFit.cover
+                              )
+                            ),
+                            width:200,
+                            height:200,
+                          )
                           : urlPhoto == null
                               ? Text("กำลังโหลดรูป")
-                              : Image.network(urlPhoto, width: 64),
+                              : Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              image: DecorationImage(
+                                image: NetworkImage(urlPhoto)
+                                ,fit: BoxFit.cover
+                              )
+                            ),
+                            width:200,
+                            height:200,
+                          ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

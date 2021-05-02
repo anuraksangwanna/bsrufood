@@ -94,7 +94,7 @@ class _CreditState extends State<Credit> {
       order["detail"] = ref;
       order["history"] = false;
       order["orderDate"] = "${now.day}/${now.month}/${now.year}";
-      order["orderList"] = "$orderId";
+      order["orderList"] = int.parse(orderId);
       order["orderId"] = "$i";
       order["shopId"] = "${widget.shop["userId"]}";
       order["staComent"] = false;

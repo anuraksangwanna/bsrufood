@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:bsrufood/main.dart';
 import 'package:bsrufood/srceen/sqllite/data_item_order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +142,7 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
       order["detail"] = ref;
       order["history"] = false;
       order["orderDate"] = "${now.day}/${now.month}/${now.year}";
-      order["orderList"] = "$orderId";
+      order["orderList"] = int.parse(orderId);
       order["orderId"] = "$i";
       order["shopId"] = "${shop["userId"]}";
       order["staComent"] = false;
@@ -159,7 +160,8 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
       print(order);
       database.delete();
       database.queryAllRows();
-      Navigator.pop(_context);
+      MaterialPageRoute _route = MaterialPageRoute(builder: (BuildContext _contexr)=>Mainhome(pageSelect: 1,));
+      Navigator.pushAndRemoveUntil(_context, _route, (route) => false);
       }catch(eror){
           print("eror");
       }
@@ -208,7 +210,8 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
           TextButton(
             child: Text('ตกลง'),
             onPressed: () {
-              Navigator.of(context).pop();
+              MaterialPageRoute _route = MaterialPageRoute(builder: (BuildContext _contexr)=>Mainhome(pageSelect: 1,));
+              Navigator.pushAndRemoveUntil(_context, _route, (route) => false);
             },
           ),
         ],

@@ -42,7 +42,9 @@ class Myapp extends StatelessWidget {
 }
 
 class Mainhome extends StatefulWidget {
-  Mainhome({Key key}) : super(key: key);
+  final int pageSelect;
+  final bool hidenBottomBar;
+  Mainhome({this.pageSelect,this.hidenBottomBar = false});
 
   @override
   _MainhomeState createState() => _MainhomeState();
@@ -108,7 +110,10 @@ flutterLocalNotificationsPlugin.initialize(initializationSettings,
     });
 
     super.initState();
-    print(_firebase.currentUser);
+    if(widget.pageSelect !=null){
+      page = widget.pageSelect;
+      setState(() {});
+    }
     message();
     getUser();
   }
@@ -153,7 +158,7 @@ flutterLocalNotificationsPlugin.initialize(initializationSettings,
           ] :[],
           centerTitle: true,
         ), body: pages(page),
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: widget.hidenBottomBar ? null :  BottomNavigationBar(
         onTap:  onindex,
          currentIndex: page,
          type: BottomNavigationBarType.fixed,

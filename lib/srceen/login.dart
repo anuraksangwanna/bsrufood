@@ -3,29 +3,27 @@ import 'package:bsrufood/srceen/singin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
-
 }
-
-
 
 final keyfrom = GlobalKey<FormState>();
 final userController = TextEditingController();
 final passwordController = TextEditingController();
+final email = TextEditingController();
 Authcontroller authController;
+String msg = "";
 final facebookLogin = FacebookLogin();
-
-
+FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 void _onLogin() {
   if (keyfrom.currentState.validate()) {
     keyfrom.currentState.save();
     authController.onLogin(
         email: userController.text, password: passwordController.text);
-    print(passwordController.text);
   }
 }
 
@@ -34,6 +32,59 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     authController = Authcontroller(context);
+  }
+
+  void showdialog(){
+    Alert(
+      context: context,
+      title: "ลืมรหัสผ่าน?",
+      content: Column(children: [
+        _createinput(controller: email,hinttext: "E-mail",keyboardType: TextInputType.emailAddress),
+        Text(msg,style: TextStyle(color: Colors.red),)
+      ],),
+      buttons: [
+          DialogButton(
+          child: Text("กดเพื่อส่งข้อมูล",style: TextStyle(color: Colors.white),),
+          color: Color.fromRGBO(255, 51, 247, 1.0),
+          onPressed: (){
+            if(email.text == ""){
+              setState(() {
+                msg = "กรุณากรอกอีเมล";
+              });
+              Navigator.pop(context);
+              showdialog();
+            }else{
+                firebaseAuth.sendPasswordResetEmail(email: email.text).catchError((e,sd){
+                   msg = "";
+                  setState(() {});
+                  Navigator.pop(context);
+                  alertstatus("ไม่สำเร็จ",AlertType.error, "กรุณากดส่งใหม่อีกครั้ง");
+                }).then((value){
+                  msg = "";
+                  email.clear();
+                  setState(() {});
+                  Navigator.pop(context);
+                  alertstatus("สำเร็จ",AlertType.success, "ไปที่อีเมลเพื่อยืนยันรหัสผ่าน");
+                });
+              }
+            
+          })
+      ],
+      
+    ).show();
+  }
+
+  void alertstatus(String status,AlertType icon,String desc){
+    Alert(type: icon,
+          context: context,
+          title: status,
+          desc: desc,
+          buttons: [
+            DialogButton(child: Text("ตกลง",style: TextStyle(color: Colors.white),),
+            onPressed: ()=>Navigator.pop(context),
+            )
+          ]
+    ).show();
   }
 
   @override
@@ -52,7 +103,6 @@ class _LoginState extends State<Login> {
                   child: Image.asset(
                     "images/logo.jpg",
                     width: 200,
-                    
                   ),
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 10)),
@@ -68,11 +118,23 @@ class _LoginState extends State<Login> {
                             controller: passwordController,
                             hinttext: "Password",
                             isPassword: true),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: ()=>showdialog(),
+                              child: Text(
+                                "ลืมรหัสผ่าน ?",
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 18),
+                              ),
+                            )),
+                        Padding(padding: EdgeInsets.symmetric(vertical: 10)),
                         SizedBox(
                           width: double.infinity,
                           child: RaisedButton(
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                               color: Color.fromRGBO(255, 51, 247, 1.0),
                               padding: EdgeInsets.symmetric(vertical: 15),
                               child: Text("เข้าสู่ระบบ",
@@ -88,13 +150,16 @@ class _LoginState extends State<Login> {
                           child: RaisedButton(
                               color: Colors.green,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                               padding: EdgeInsets.symmetric(vertical: 15),
                               child: Text("สมัครสมาชิก",
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white)),
                               onPressed: () {
-                                MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context) => Register() );
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Register());
                                 Navigator.push(context, route);
                               }),
                         ),
@@ -114,7 +179,8 @@ class _LoginState extends State<Login> {
                           child: RaisedButton(
                               color: Colors.blue,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                               padding: EdgeInsets.symmetric(vertical: 15),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -132,7 +198,8 @@ class _LoginState extends State<Login> {
                                           fontSize: 18, color: Colors.white)),
                                 ],
                               ),
-                              onPressed: ()=> authController.loginWithFacebook(context)),
+                              onPressed: () =>
+                                  authController.loginWithFacebook(context)),
                         ),
                       ],
                     ))

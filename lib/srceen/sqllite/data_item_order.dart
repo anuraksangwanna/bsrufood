@@ -13,6 +13,7 @@ class DataItemOder {
   final table = 'my_table';
   
   static final columnId = '_id';
+  static final columnFoodid = 'food_id';
   static final columnShopId = 'shop_id';
   static final columnName = 'name';
   static final columnPrice = 'price';
@@ -42,6 +43,7 @@ class DataItemOder {
     await db.execute('''
       CREATE TABLE $table (
         $columnId INTEGER PRIMARY KEY,
+        $columnFoodid INTEGER,
         $columnShopId TEXT NOT NULL,
         $columnName TEXT NOT NULL,
         $columnPrice INTEGER,
@@ -55,11 +57,11 @@ class DataItemOder {
     Database db = await database;
     // return await db.insert(table, data.toMap());
       var item  = await queryAllRows();
-      var index = item.indexWhere((element) => element.name==data.name);
+      var index = item.indexWhere((element) => element.food_id==data.food_id);
       if(index!=-1){
            data.count  = item[index].count+1;
           //  print(data.toMapnokey());
-           await db.update(table, data.toMapnokey(), where: '$columnName = ?', whereArgs: [data.name]);
+           await db.update(table, data.toMapnokey(), where: '$columnFoodid = ?', whereArgs: [data.food_id]);
       }else{
         data.count = 1 ;
          await db.insert(table, data.toMap());
@@ -88,7 +90,7 @@ class DataItemOder {
    Future<int> updatelist(ItemClas data,String status) async {
     Database db = await database;
      var item  = await queryAllRows();
-     var index = item.indexWhere((element) => element.name==data.name);
+     var index = item.indexWhere((element) => element.food_id==data.food_id);
       if(status == "add"){
            data.count  = item[index].count+1;
           //  print(data.toMapnokey());

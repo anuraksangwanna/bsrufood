@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -20,6 +21,7 @@ FirebaseAuth firebase = FirebaseAuth.instance;
 final facebookLogin = FacebookLogin();
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 Map user;
+bool statusButton = false;
 Future<void> logout() async {
    List<String> tokenUser;
     await _firebaseMessaging.getToken().then((String token) {
@@ -44,6 +46,36 @@ Future<void> logout() async {
       });
     }
 
+    void alertConfirm() {
+    Alert(context: context, title: "ออกจากระบบ?", buttons: [
+      DialogButton(
+        onPressed: statusButton == true
+            ? () {}
+            : () {
+                setState(() {
+                  statusButton = true;
+                });
+                logout();
+              },
+        child: statusButton
+            ? CircularProgressIndicator()
+            : Text(
+                "ตกลง",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+        color: Color.fromRGBO(255, 0, 0, 1),
+      ),
+      DialogButton(
+        onPressed: () => Navigator.pop(context),
+        child: Text(
+          "ยกเลิก",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        color: Color.fromRGBO(0, 0, 0, 1),
+      ),
+    ]).show();
+  }
+
     @override
     void initState() { 
       super.initState();
@@ -51,12 +83,15 @@ Future<void> logout() async {
     }
 
   Widget build(BuildContext context) {
+    print(firebase.currentUser.photoURL);
     return Column(
       children: [
         ListTile(
           leading: ClipRRect(
-          borderRadius: BorderRadius.circular(30.0),
-          child: Image.network(firebase.currentUser.photoURL)),
+          borderRadius: BorderRadius.circular(100.0),
+          child: Image.network(firebase.currentUser.photoURL,width: 50,height: 50,fit: BoxFit.cover,)
+            
+          ),
           title: Text(firebase.currentUser.displayName),
           subtitle: Text("แก้ไขข้อมูลส่วนตัว",style: TextStyle(color:Colors.green),),
           onTap: () {
@@ -74,7 +109,7 @@ Future<void> logout() async {
         ListTile(
           leading: Icon(Icons.logout),
           title: Text("ออกจากระบบ"),
-          onTap: ()=>logout(),
+          onTap: ()=>alertConfirm(),
         ),
       ],
     );

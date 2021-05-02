@@ -1,3 +1,4 @@
+import 'package:bsrufood/set_datetimepicker.dart';
 import 'package:bsrufood/srceen/cart/cart_controller.dart';
 import 'package:bsrufood/srceen/cart/credit.dart';
 import 'package:bsrufood/srceen/sqllite/data_item_order.dart';
@@ -5,6 +6,7 @@ import 'package:bsrufood/srceen/sqllite/item_clas.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Listfood extends StatefulWidget {
@@ -18,7 +20,7 @@ class Listfood extends StatefulWidget {
 class _ListfoodState extends State<Listfood> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   CartController cartController;
-  final time = TextEditingController();
+  String time ;
   Map<String, dynamic> shop = Map();
   final database = DataItemOder();
   var cart = [];
@@ -41,7 +43,7 @@ class _ListfoodState extends State<Listfood> {
   void confirm(int id) async {
     Alert(
       context: context,
-      title: "คุณต้องการเมนูนี้",
+      title: "คุณต้องการลบเมนูนี้",
       buttons: [
         DialogButton(
           child: Text(
@@ -101,35 +103,18 @@ class _ListfoodState extends State<Listfood> {
     setState(() {});
   }
 
-  void datetime(){
-        Alert(
-        context: context,
-        title: "ระบุเวลารับ",
-        content: Column(
-          children: <Widget>[
-            TextField(
-              controller: time,
-              keyboardType: TextInputType.datetime,
-              decoration: InputDecoration(
-                icon: Icon(Icons.alarm),
-                labelText: '00:00',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              setState(() {});
-              Navigator.pop(context);
-              },
-            child: Text(
-              "ตกลง",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+  void showtime(){
+    DatePicker.showPicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    time = "${date.hour}:${date.minute}";
+                  }, onConfirm: (date) {
+                    time = "${date.hour}:${date.minute}";
+                    setState(() {});
+                  },
+                      pickerModel: SetDateTimePicker(currentTime: DateTime.now()),
+                      locale: LocaleType.en);
   }
+
 
   @override
   void initState() {
@@ -214,11 +199,11 @@ class _ListfoodState extends State<Listfood> {
                   ),
                   Padding(padding: EdgeInsets.only(bottom: 10)),
                   InkWell(
-                    onTap: ()=>datetime(),
+                    onTap: ()=>showtime(),
                     child: Row(
                       children: [
                         Icon(Icons.alarm),
-                       time.text == "" ? Text("ต้องการระบุเวลา : ไม่ระบุ") : Text("ต้องการระบุเวลา : ${time.text}")
+                       time == null ? Text("ต้องการระบุเวลา : ไม่ระบุ") : Text("ต้องการระบุเวลา : $time")
                       ],
                     ),
                   ),
@@ -257,7 +242,7 @@ class _ListfoodState extends State<Listfood> {
                         onPressed: () {
                           MaterialPageRoute route = MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  Credit(widget.userid,time.text,shop, cart, total));
+                                  Credit(widget.userid,time,shop, cart, total));
                           Navigator.push(context, route).then((value){
                             setState(() {
                               cart = [];
@@ -278,7 +263,7 @@ class _ListfoodState extends State<Listfood> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () =>
-                            cartController.getCash(shop,time.text, cart, widget.userid)),
+                            cartController.getCash(shop,time, cart, widget.userid)),
                   ),
                   SizedBox(
                     width: double.infinity,

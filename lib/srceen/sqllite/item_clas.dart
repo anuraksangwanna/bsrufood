@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class ItemClas {
     int id;
+    int food_id;
     String shopId;
     String name;
     int price;
@@ -9,6 +10,7 @@ class ItemClas {
     bool status;
   ItemClas({
     this.id,
+    this.food_id,
     this.shopId,
     this.name,
     this.price,
@@ -18,6 +20,7 @@ class ItemClas {
 
   ItemClas copyWith({
     int id,
+    int food_id,
     String shopId,
     String name,
     int price,
@@ -26,6 +29,7 @@ class ItemClas {
   }) {
     return ItemClas(
       id: id ?? this.id,
+      food_id: food_id ?? this.food_id,
       shopId: shopId ?? this.shopId,
       name: name ?? this.name,
       price: price ?? this.price,
@@ -37,6 +41,7 @@ class ItemClas {
   Map<String, dynamic> toMap() {
     return {
       '_id': id,
+      'food_id':food_id,
       'shop_id': shopId,
       'name': name,
       'price': price,
@@ -47,6 +52,7 @@ class ItemClas {
 
   Map<String, dynamic> toMapnokey() {
     return {
+      'food_id':food_id,
       'shop_id': shopId,
       'name': name,
       'price': price,
@@ -60,6 +66,7 @@ class ItemClas {
   
     return ItemClas(
       id: map['_id'],
+      food_id: map['food_id'],
       shopId: map['shop_id'],
       name: map['name'],
       price: map['price'],
@@ -74,7 +81,7 @@ class ItemClas {
 
   @override
   String toString() {
-    return 'ItemClas(id: $id, shopId: $shopId, name: $name, price: $price, count: $count, status: $status)';
+    return 'ItemClas(id: $id, food_id: $food_id, shopId: $shopId, name: $name, price: $price, count: $count, status: $status)';
   }
 
   @override
@@ -83,6 +90,7 @@ class ItemClas {
   
     return o is ItemClas &&
       o.id == id &&
+      o.food_id == food_id &&
       o.shopId == shopId &&
       o.name == name &&
       o.price == price &&
@@ -93,6 +101,7 @@ class ItemClas {
   @override
   int get hashCode {
     return id.hashCode ^
+      food_id.hashCode ^
       shopId.hashCode ^
       name.hashCode ^
       price.hashCode ^

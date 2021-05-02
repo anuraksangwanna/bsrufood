@@ -1,3 +1,4 @@
+import 'package:bsrufood/srceen/cart/cart_qrcode.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -74,6 +75,8 @@ class _HHState extends State<HH> {
               title: Text("Order-${noti[index]["orderId"]}"),            
               subtitle: Text("วันที่ ${noti[index]["orderDate"]}"),
               onTap: (){
+                MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context)=>CartQrCode(noti[index]));
+                Navigator.push(context, route);
               }
             );
           },

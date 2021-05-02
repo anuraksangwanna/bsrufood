@@ -68,6 +68,7 @@ class _RegisterfbState extends State<Registerfb> {
     Map<String, dynamic> map = Map();
     map['username'] = firebaseAuth.currentUser.displayName;
     map['userId'] = "${now.year}$memberid";
+    map['photo'] = firebaseAuth.currentUser.photoURL;
     map['stucode'] = stucode.text;
     map['phone'] = phoneNumber.text;
     map['photo'] = urlPhoto;

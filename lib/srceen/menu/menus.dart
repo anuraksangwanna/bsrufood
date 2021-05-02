@@ -1,4 +1,4 @@
-import 'package:bsrufood/srceen/menu/list_menu.dart';
+import 'package:bsrufood/main.dart';
 import 'package:bsrufood/srceen/menu/review.dart';
 import 'package:bsrufood/srceen/sqllite/data_item_order.dart';
 import 'package:bsrufood/srceen/sqllite/item_clas.dart';
@@ -8,7 +8,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 class Menus extends StatefulWidget {
   final String userId;
   final Map order;
-  Menus(this.userId,this.order);
+  Menus(this.userId, this.order);
   @override
   _MenusState createState() => _MenusState();
 }
@@ -65,9 +65,9 @@ class _MenusState extends State<Menus> {
   }
 
   void getcart() async {
-       cart = await database.queryAllRows();
+    cart = await database.queryAllRows();
     cartcount = cartcount.map((e) {
-      var index = cart.indexWhere((element) => element.name == e["name"]);
+      var index = cart.indexWhere((element) => element.food_id == e["food_id"]);
       e['shop_id'] = shopid;
       if (index != -1) {
         e['shop_id'] = cart[index].shopId;
@@ -82,7 +82,6 @@ class _MenusState extends State<Menus> {
   void initState() {
     super.initState();
     shopid = widget.order["userId"];
-    print("Shopid = $shopid");
     cartcount = widget.order["menus"] as List<dynamic>;
     // print(widget.order["menus"]);
     getcart();
@@ -111,56 +110,131 @@ class _MenusState extends State<Menus> {
       ),
       body: ListView.separated(
           itemBuilder: (context, index) {
-            return !cartcount[index]["status"] ? Container() : ListTile(
-              leading: cartcount[index]["image"] == null
-                  ? Container(
-                      decoration: BoxDecoration(
-                          color: Colors.pink,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(30.0))),
-                      width: 40,
-                      height: 40,
-                      child: Center(
-                          child: Icon(
-                        Icons.food_bank,
-                        color: Colors.white,
-                      )),
+            return !cartcount[index]["status"]
+                ? ListTile(
+                    leading: cartcount[index]["image"] == null
+                        ? Container(
+                            decoration: BoxDecoration(
+                                color: Colors.pink,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50.0))),
+                            width: 100,
+                            height: 100,
+                            child: Center(
+                                child: Text("สินค้าหมด",style: TextStyle(color: Colors.white),
+                            )),
+                          )
+                        : Container(
+                            width: 100,
+                            height: 200,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
+                                image: DecorationImage(
+                                    image:
+                                        NetworkImage(cartcount[index]["image"]),
+                                      fit: BoxFit.cover,
+                              colorFilter: ColorFilter.srgbToLinearGamma()),
+                            ),
+                            child: Center(
+                              child: Text("สินค้าหมด",style: TextStyle(
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      // bottomLeft
+                                      offset: Offset(-2, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // bottomRight
+                                      offset: Offset(2, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topRight
+                                      offset: Offset(1.5, 1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topLeft
+                                      offset: Offset(-1.5, 1.5),
+                                      color: Colors.black),
+                                ]
+                              ),),
+                            ),
+                            ),
+                    title: Text(
+                      cartcount[index]["name"],
+                      style: TextStyle(fontSize: 18.0
+                      ),
+                    ),
+                    trailing: Text(
+                      "${cartcount[index]["price"]} บาท",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    onTap: (){},
                     )
-                  : Image.network(cartcount[index]["image"]),
-              title: Text(
-                cartcount[index]["name"],
-                style: TextStyle(fontSize: 18.0),
-              ),
-              subtitle: cartcount[index]["count"] == null
-                  ? Container()
-                  : Text("x${cartcount[index]["count"]}"),
-              tileColor: cartcount[index]["count"] == null
-                  ? Colors.white
-                  : Color.fromRGBO(255, 51, 247, 0.1),
-              trailing: Text(
-                "${cartcount[index]["price"]} บาท",
-                style: TextStyle(fontSize: 18.0),
-              ),
-              onTap: () {
-                insertToclas(cartcount[index]);
-              },
-            );
+                : ListTile(
+                    leading: cartcount[index]["image"] == null
+                        ? Container(
+                            decoration: BoxDecoration(
+                                color: Colors.pink,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30.0))),
+                            width: 100,
+                            height: 100,
+                            child: Center(
+                                child: Icon(
+                              Icons.food_bank,
+                              color: Colors.white,
+                            )),
+                          )
+                        : Container(
+                            width: 100,
+                            height: 200,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
+                                image: DecorationImage(
+                                    image:
+                                        NetworkImage(cartcount[index]["image"]),
+                                    fit: BoxFit.cover))),
+                    title: Text(
+                      cartcount[index]["name"],
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    subtitle: cartcount[index]["count"] == null
+                        ? Container()
+                        : Text("x${cartcount[index]["count"]}"),
+                    tileColor: cartcount[index]["count"] == null
+                        ? Colors.white
+                        : Color.fromRGBO(255, 51, 247, 0.1),
+                    trailing: Text(
+                      "${cartcount[index]["price"]} บาท",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    onTap: () {
+                      insertToclas(cartcount[index]);
+                    },
+                  );
           },
-          separatorBuilder: (context, index) => !cartcount[index]["status"] ? Container() : Divider(
-                color: Color.fromRGBO(255, 51, 247, 1),
-              ),
+          separatorBuilder: (context, index) => Divider(
+                  color: Color.fromRGBO(255, 51, 247, 1),
+                ),
           itemCount: cartcount.length),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: RaisedButton(
             child: Text(
-              "ดูตะกร้า ${cart.length} รายการ",
+              "ดูตระกร้า ${cart.length} รายการ",
               style: TextStyle(color: Colors.white, fontSize: 18.0),
             ),
-            onPressed: cart.length == 0 ? null : () {
-              MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext context)=>ListMenu(widget.userId));
-              Navigator.push(context, route);
-            }),
+            onPressed: cart.length == 0
+                ? null
+                : () {
+                    MaterialPageRoute route = MaterialPageRoute(
+                        builder: (BuildContext context) => Mainhome(
+                              pageSelect: 1,hidenBottomBar: true,
+                            ));
+                    Navigator.push(context, route);
+                  }),
       ),
     );
   }
