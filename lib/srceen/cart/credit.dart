@@ -100,7 +100,7 @@ class _CreditState extends State<Credit> {
       order["staComent"] = false;
       order["staOrder"] = false;
       order["image"] = urlPhoto;
-      order["time"] = widget.time == "" ? null : "${widget.time}";
+      order["time"] = widget.time == null ? null : "${widget.time}";
       order["userId"] = "${widget.userid}";
       print(order);
       await firestore.collection("orders").doc("O$orderId").set(order);

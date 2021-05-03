@@ -148,7 +148,7 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
       order["staComent"] = false;
       order["staOrder"] = false;
       order["image"] = null;
-      order["time"] = time == "" ? null : "$time";
+      order["time"] = time == null ? null : "$time";
       order["userId"] = "$userid";
       // print(order);
       try{
@@ -171,7 +171,7 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
   void orderError(String limit) async {
     Alert(
       context: _context,
-      title: "เกินกว่าที่ร้านค้ากำหนดไว้สูงสุดแค่ $limit รายการ",
+      title: "สั่งได้ไม่เกิน $limit บาท",
       buttons: [
         DialogButton(
           child: Text(
@@ -224,7 +224,7 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
       int total = 0;
           if(shop["cash"]){
               cart.forEach((element) {
-                    total = total+element.count;
+                    total = total+(element.price * element.count);
               });
               if(total > shop["orderCount"]){
                   orderError(shop["orderCount"].toString());
