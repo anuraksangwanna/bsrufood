@@ -155,7 +155,7 @@ Future addmenu(Map<String,dynamic> shop,String time,List cart,String userid)asyn
       await firestore.collection("orders").doc("O$orderId").set(order);
       await firestore.collection("orderDetail").doc("O$orderId").set({"detail":FieldValue.arrayUnion(detail)});
           shop["tokenUser"].forEach((value) {
-         http.get("https://apibsrufood.000webhostapp.com/apiNotification.php?isAdd=true&token=$value&title=มีออเดอร์มาใหม่&body=Order-$i");
+         http.get("https://apinotificationbsrufood.000webhostapp.com/apiNotification.php?isAdd=true&token=$value&title=มีออเดอร์มาใหม่&body=Order-$i");
       });
       print(order);
       database.delete();
