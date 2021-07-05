@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Registerfb extends StatefulWidget {
   @override
@@ -71,7 +68,6 @@ class _RegisterfbState extends State<Registerfb> {
     map['photo'] = firebaseAuth.currentUser.photoURL;
     map['stucode'] = stucode.text;
     map['phone'] = phoneNumber.text;
-    map['photo'] = urlPhoto;
     map['tokenUser'] = FieldValue.arrayUnion(tokenUser);
     map['userStatus'] = "user";
 
