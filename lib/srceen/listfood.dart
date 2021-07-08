@@ -5,7 +5,6 @@ import 'package:bsrufood/srceen/sqllite/data_item_order.dart';
 import 'package:bsrufood/srceen/sqllite/item_clas.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
